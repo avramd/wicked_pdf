@@ -51,10 +51,17 @@ module PdfHelper
     end
 
     def make_pdf(options = {})
-      html_string = render_to_string(:template => options[:template], :layout => options[:layout], :formats => options[:formats], :handlers => options[:handlers])
+      @template.template_format = :html
+      html_string = externals_to_absolute_path(render_to_string(
+        options.slice(:template_format, :template, :layout , :formats, :handlers))
+      )
       options = prerender_header_and_footer(options)
       w = WickedPdf.new(options[:wkhtmltopdf])
       w.pdf_from_string(html_string, options)
+    end
+
+    def externals_to_absolute_path(html)
+      html.gsub(/\/(stylesheets|images|system)\//) {|s| "#{request.protocol}#{request.host_with_port}/#{$1}/" }
     end
 
     def make_and_send_pdf(pdf_name, options={})
