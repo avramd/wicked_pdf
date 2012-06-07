@@ -61,7 +61,7 @@ module PdfHelper
     end
 
     def externals_to_absolute_path(html)
-      html.gsub(/\/(stylesheets|images|system)\//) {|s| "#{request.protocol}#{request.host_with_port}/#{$1}/" }
+      html.gsub(/\/(assets|stylesheets|images|system)\//) {|s| "#{request.protocol}#{request.host_with_port}/#{$1}/" }
     end
 
     def make_and_send_pdf(pdf_name, options={})
